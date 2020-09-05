@@ -2,7 +2,7 @@ const parser = require('gitdiff-parser');
 const { Document, Packer, Paragraph, TextRun, HeadingLevel } = require("docx");
 const { exec } = require('child_process');
 const fs = require('fs');
-const { trim, flatten } = require('lodash');
+const { trim, flatten, first, last } = require('lodash');
 
 async function execShellCommand(cmd) {
     return new Promise((resolve, reject) => {
@@ -41,7 +41,7 @@ async function getCommmits() {
             ...commit,
         };
     }));
-    diffAndMessages.forEach((commit) => {
+    diffAndMessages.reverse().forEach((commit) => {
         const children = [];
         children.push(new Paragraph({
             text: commit.message,
@@ -69,6 +69,7 @@ async function getCommmits() {
                     return paragraph;
                 });
                 if (index < hunks.length - 1) {
+                    // 如果不是最后一个 hunk，就加一个 ...
                     changes.push(new Paragraph('...'));
                 }
                 return changes;
@@ -77,7 +78,12 @@ async function getCommmits() {
                 new Paragraph({
                     text: `// ${diff.newPath}`,
                 }),
+                // 如果没有从开头开始的，加个 ...
+                (first(diff.hunks).oldStart === 1 || first(diff.hunks).oldStart === 1) ? undefined : new Paragraph('...'),
                 ...flatten(hunks),
+                // 简单的判断，如果以空行开头，说明不是最后一行，下方加个 ...
+                last(last(diff.hunks).changes).content.startsWith(' ') ? undefined : new Paragraph('...'),
+                // 空行
                 new Paragraph(''),
             ]
         })));
