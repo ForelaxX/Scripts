@@ -1,0 +1,17 @@
+{
+  "name": "pretty-git-diff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "docx": "^5.3.0",
+    "gitdiff-parser": "^0.2.2",
+    "lodash": "^4.17.20",
+    "nodegit": "^0.27.0"
+  }
+}
