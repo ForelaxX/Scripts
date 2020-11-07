@@ -2,6 +2,7 @@ const parser = require('gitdiff-parser');
 const { Document, Packer, Paragraph, TextRun, HeadingLevel } = require("docx");
 const { exec } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const { trim, flatten, first, last } = require('lodash');
 
 async function execShellCommand(cmd) {
@@ -30,6 +31,7 @@ async function getCommmits() {
 
 (async function () {
     const dir = process.argv[2];
+    const output = process.argv[3];
     process.chdir(dir);
     const commits = await getCommmits();
     const doc = new Document({
@@ -125,6 +127,6 @@ async function getCommmits() {
         });
     });
     Packer.toBuffer(doc).then((buffer) => {
-        fs.writeFileSync("code.docx", buffer);
+        fs.writeFileSync(path.join(`${output}`, 'code.docx'), buffer);
     });
 })();
